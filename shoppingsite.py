@@ -6,7 +6,7 @@ put melons in a shopping cart.
 Authors: Joel Burton, Christian Fernandez, Meggie Mahnken, Katie Byers.
 """
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session
 import jinja2
 
 import melons
@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 app.secret_key = 'this-should-be-something-unguessable'
 
-session = {}
+
 # Normally, if you refer to an undefined variable in a Jinja template,
 # Jinja silently ignores this. This makes debugging difficult, so we'll
 # set an attribute of the Jinja environment that says to make this an
@@ -93,11 +93,11 @@ def add_to_cart(melon_id):
     if "cart" not in session:
         session["cart"] = {}
 
-   
+    melon = melons.get_by_id(melon_id)
     session["cart"][melon_id] = session["cart"].get(melon_id, 0) + 1
     print session["cart"]
 
-    flash("We have added 1 melon to your cart!")
+    flash("We have added 1 {} to your cart!".format(melon.common_name))
 
     # TODO: Finish shopping cart functionality
 
@@ -112,7 +112,6 @@ def add_to_cart(melon_id):
 
     return redirect("/cart")
 
-    # return render_template("cart.html")
 
 @app.route("/login", methods=["GET"])
 def show_login():

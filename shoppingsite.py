@@ -17,6 +17,7 @@ app = Flask(__name__)
 
 app.secret_key = 'this-should-be-something-unguessable'
 
+session = {}
 # Normally, if you refer to an undefined variable in a Jinja template,
 # Jinja silently ignores this. This makes debugging difficult, so we'll
 # set an attribute of the Jinja environment that says to make this an
@@ -87,6 +88,17 @@ def add_to_cart(melon_id):
     page and display a confirmation message: 'Melon successfully added to
     cart'."""
 
+    # why did we get an error message before defining sessions globally
+
+    if "cart" not in session:
+        session["cart"] = {}
+
+   
+    session["cart"][melon_id] = session["cart"].get(melon_id, 0) + 1
+    print session["cart"]
+
+    flash("We have added 1 melon to your cart!")
+
     # TODO: Finish shopping cart functionality
 
     # The logic here should be something like:
@@ -98,8 +110,9 @@ def add_to_cart(melon_id):
     # - flash a success message
     # - redirect the user to the cart page
 
-    return "Oops! This needs to be implemented!"
+    return redirect("/cart")
 
+    # return render_template("cart.html")
 
 @app.route("/login", methods=["GET"])
 def show_login():
